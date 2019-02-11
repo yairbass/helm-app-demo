@@ -8,7 +8,7 @@ podTemplate(label: 'helm-template' , cloud: 'k8s' , containers: [
     node('helm-template') {
         stage('Build Chart & push it to Artifactory') {
 
-            git url: 'https://github.com/eladh/docker-app-demo.git', credentialsId: 'github'
+            git url: 'https://github.com/eladh/helm-app-demo.git', credentialsId: 'github'
             def pipelineUtils = load 'pipelineUtils.groovy'
 
             def aqlString = 'items.find ({"repo":"docker-local","type":"folder","$and":' +
