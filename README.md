@@ -1,1 +1,1 @@
-# helm-app-repo
+# helm-app-demo
