@@ -19,15 +19,20 @@ podTemplate(label: 'helm-template' , cloud: 'k8s' , containers: [
             def artifactInfo = pipelineUtils.executeAql(rtFullUrl, aqlString)
             def dockerTag = artifactInfo ? artifactInfo.name : "latest"
 
-            println dockerTag
-
             container('helm') {
                 sh "helm init --client-only"
                 sh "sed -i 's/latest/${dockerTag}/g' helm-chart-docker-app/values.yaml"
                 sh "helm package helm-chart-docker-app"
             }
             container('jfrog-cli') {
-                pipelineUtils.pushHelmChart("helm-local" ,"helm-chart-docker-app" ,dockerTag)
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactorypass', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                    sh "jfrog rt c beta --user ${USERNAME} --password ${PASSWORD} --url ${rtFullUrl} < /dev/null"
+                    sh "jfrog rt u '*.tgz' helm-local --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER} -server-id beta --props='release-bundle=true'"
+                    sh "jfrog rt bce ${env.JOB_NAME} ${env.BUILD_NUMBER} "
+
+                    sh "jfrog rt dl docker-prod-local/docker-app/${dockerTag}/manifest.json --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER} -server-id beta"
+                    sh "jfrog rt bp ${env.JOB_NAME} ${env.BUILD_NUMBER} -server-id beta"
+                }
             }
         }
     }
