@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 # Usage: ./bump_version.sh file ,  <major|minor|patch> - Increments the relevant version part by one.
 
 set -e
