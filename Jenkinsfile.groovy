@@ -26,9 +26,9 @@ podTemplate(label: 'helm-template' , cloud: 'k8s' , containers: [
                     sh 'git config --global user.email "you@example.com"'
                     sh 'git config --global user.name "Your Name"'
                     sh 'git remote set-url origin "ssh://git@github.com/eladh/helm-app-demo.git" ';
-                    sh "cd helm-chart-docker-app; ./update_version.sh Chart.yaml patch"
-                    sh 'git add Chart.yaml'
-                    sh 'git commit -m "bump chart version" Chart.yaml '
+                    sh "./update_version.sh helm-chart-docker-app/Chart.yaml patch"
+                    sh 'git add helm-chart-docker-app/Chart.yaml'
+                    sh 'git commit -m "bump chart version" helm-chart-docker-app/Chart.yaml '
                     sh 'git push origin master'
                 }
             }
