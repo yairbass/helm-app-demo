@@ -5,7 +5,7 @@ podTemplate(label: 'helm-template' , cloud: 'k8s' , containers: [
         containerTemplate(name: 'jfrog-cli', image: 'docker.bintray.io/jfrog/jfrog-cli-go:latest', command: 'cat', ttyEnabled: true) ,
         containerTemplate(name: 'helm', image: 'alpine/helm:latest', command: 'cat', ttyEnabled: true) ]) {
 
-    node('helm-template') {
+    node('helm') {
         stage('Checkout chart and bump version') {
             git url: 'https://github.com/eladh/helm-app-demo.git', credentialsId: 'github'
             sh "helm plugin install https://github.com/mbenabda/helm-local-chart-version"
