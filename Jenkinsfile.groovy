@@ -8,7 +8,6 @@ podTemplate(label: 'helm-template' , cloud: 'k8s' , containers: [
     node('helm-template') {
         stage('Build Chart & push it to Artifactory') {
             git url: 'https://github.com/eladh/helm-app-demo.git', credentialsId: 'github'
-            sh "./update_version.sh helm-chart-docker-app/Chart.yaml patch"
 
             def pipelineUtils = load 'pipelineUtils.groovy'
 
@@ -19,6 +18,20 @@ podTemplate(label: 'helm-template' , cloud: 'k8s' , containers: [
 
             def artifactInfo = pipelineUtils.executeAql(rtFullUrl, aqlString)
             def dockerTag = artifactInfo ? artifactInfo.name : "latest"
+
+            stage ('Update Helm Chart version') {
+                sh 'ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa'
+                sh "ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts"
+                sshagent(credentials: ['githubsshkey']) {
+                    sh 'git config --global user.email "you@example.com"'
+                    sh 'git config --global user.name "Your Name"'
+                    sh 'git remote set-url origin "ssh://git@github.com/eladh/helm-app-demo.git" ';
+                    sh "cd helm-chart-docker-app; ./update_version.sh Chart.yaml patch"
+                    sh 'git add Chart.yaml'
+                    sh 'git commit -m "bump chart version" Chart.yaml '
+                    sh 'git push origin master'
+                }
+            }
 
             container('helm') {
                 sh "helm init --client-only"
