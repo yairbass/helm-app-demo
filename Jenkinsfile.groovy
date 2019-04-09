@@ -5,16 +5,16 @@ podTemplate(label: 'helm-template' , cloud: 'k8s' , containers: [
         containerTemplate(name: 'jfrog-cli', image: 'docker.bintray.io/jfrog/jfrog-cli-go:latest', command: 'cat', ttyEnabled: true) ,
         containerTemplate(name: 'helm', image: 'alpine/helm:latest', command: 'cat', ttyEnabled: true) ]) {
 
-    node('helm') {
-        stage('Checkout chart and bump version') {
-            git url: 'https://github.com/eladh/helm-app-demo.git', credentialsId: 'github'
-            sh "helm plugin install https://github.com/mbenabda/helm-local-chart-version"
-            sh "helm local-chart-version bump -c helm-chart-docker-app/  -s minor"
-        }
-    }
-
     node('helm-template') {
         stage('Build Chart & push it to Artifactory') {
+
+            container('helm') {
+                stage('Checkout chart and bump version') {
+                    git url: 'https://github.com/eladh/helm-app-demo.git', credentialsId: 'github'
+                    sh "helm plugin install https://github.com/mbenabda/helm-local-chart-version"
+                    sh "helm local-chart-version bump -c helm-chart-docker-app/  -s minor"
+                }
+            }
 
             def pipelineUtils = load 'pipelineUtils.groovy'
 
