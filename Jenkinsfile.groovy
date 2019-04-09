@@ -9,11 +9,6 @@ podTemplate(label: 'helm-template' , cloud: 'k8s' , containers: [
         stage('Build Chart & push it to Artifactory') {
             git url: 'https://github.com/eladh/helm-app-demo.git', credentialsId: 'github'
 
-            container('helm') {
-                    sh "helm plugin install https://github.com/mbenabda/helm-local-chart-version"
-                    sh "helm local-chart-version bump -c helm-chart-docker-app/  -s minor"
-            }
-
             def pipelineUtils = load 'pipelineUtils.groovy'
 
             def aqlString = 'items.find ({"repo":"docker-local","type":"folder","$and":' +
@@ -27,6 +22,7 @@ podTemplate(label: 'helm-template' , cloud: 'k8s' , containers: [
             container('helm') {
                 sh "helm init --client-only"
                 sh "sed -i 's/latest/${dockerTag}/g' helm-chart-docker-app/values.yaml"
+                sh "./update_version.sh helm-chart-docker-app/Chart.yaml patch"
                 sh "helm package helm-chart-docker-app"
             }
             container('jfrog-cli') {

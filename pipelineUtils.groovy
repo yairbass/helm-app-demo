@@ -12,9 +12,7 @@ private getLatestArtifact(serverUrl ,aqlString) {
         def getAqlSearchUrl = "curl -u$USERNAME:$PASSWORD -X POST " + serverUrl + "/api/search/aql -T " + aqlFile.getAbsolutePath()
         echo getAqlSearchUrl
         try {
-            println aqlString
             def response = getAqlSearchUrl.execute().text
-            println response
             def jsonSlurper = new JsonSlurper()
             def latestArtifact = jsonSlurper.parseText("${response}")
 
