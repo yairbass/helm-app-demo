@@ -7,13 +7,11 @@ podTemplate(label: 'helm-template' , cloud: 'k8s' , containers: [
 
     node('helm-template') {
         stage('Build Chart & push it to Artifactory') {
+            git url: 'https://github.com/eladh/helm-app-demo.git', credentialsId: 'github'
 
             container('helm') {
-                stage('Checkout chart and bump version') {
-                    git url: 'https://github.com/eladh/helm-app-demo.git', credentialsId: 'github'
                     sh "helm plugin install https://github.com/mbenabda/helm-local-chart-version"
                     sh "helm local-chart-version bump -c helm-chart-docker-app/  -s minor"
-                }
             }
 
             def pipelineUtils = load 'pipelineUtils.groovy'
