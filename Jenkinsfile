@@ -7,7 +7,7 @@ podTemplate(label: 'helm-template' , cloud: 'k8s' , containers: [
 
     node('helm-template') {
         stage('Build Chart & push it to Artifactory') {
-            git url: 'https://github.com/eladh/helm-app-demo.git', credentialsId: 'github'
+            git url: 'https://github.com/yairbass/helm-app-demo.git', credentialsId: 'github'
 
             def pipelineUtils = load 'pipelineUtils.groovy'
 
