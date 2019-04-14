@@ -18,19 +18,19 @@ podTemplate(label: 'helm-template' , cloud: 'k8s' , containers: [
             def artifactInfo = pipelineUtils.executeAql(rtFullUrl, aqlString)
             def dockerTag = artifactInfo ? artifactInfo.name : "latest"
 
-            stage ('Update Helm Chart version') {
-                sh 'ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa'
-                sh "ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts"
-                sshagent(credentials: ['githubsshkey']) {
-                    sh 'git config --global user.email "you@example.com"'
-                    sh 'git config --global user.name "Your Name"'
-                    sh 'git remote set-url origin "ssh://git@github.com/yairbass/helm-app-demo.git" '
-                    sh "./update_version.sh petclinic-chart-docker-app/Chart.yaml patch"
-                    sh 'git add petclinic-chart-docker-app/Chart.yaml'
-                    sh 'git commit -m "bump chart version" petclinic-chart-docker-app/Chart.yaml '
-                    sh 'git push origin master'
-                }
-            }
+//            stage ('Update Helm Chart version') {
+//                sh 'ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa'
+//                sh "ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts"
+//                sshagent(credentials: ['githubsshkey']) {
+//                    sh 'git config --global user.email "you@example.com"'
+//                    sh 'git config --global user.name "Your Name"'
+//                    sh 'git remote set-url origin "ssh://git@github.com/yairbass/helm-app-demo.git" '
+//                    sh "./update_version.sh petclinic-chart-docker-app/Chart.yaml patch"
+//                    sh 'git add petclinic-chart-docker-app/Chart.yaml'
+//                    sh 'git commit -m "bump chart version" petclinic-chart-docker-app/Chart.yaml '
+//                    sh 'git push origin master'
+//                }
+//            }
 
             container('helm') {
                 sh "helm init --client-only"
