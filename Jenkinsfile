@@ -35,7 +35,7 @@ podTemplate(label: 'helm-template' , cloud: 'k8s' , containers: [
             container('helm') {
                 sh "helm init --client-only"
                 sh "sed -i 's/latest/${dockerTag}/g' petclinic/values.yaml"
-                sh "helm package petclinic-chart-docker-app"
+                sh "helm package petclinic"
             }
             container('jfrog-cli') {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactorypass', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
