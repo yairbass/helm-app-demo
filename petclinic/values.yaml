@@ -5,12 +5,12 @@
 replicaCount: 1
 
 image:
-  repository: 104.154.184.33:80/Kpetclinic-app
+  repository: 104.154.184.33:80/petclinic-app
   tag: latest
   pullPolicy: IfNotPresent
 
 nameOverride: "petclinic-app"
-fullnameOverride: ""
+fullnameOverride: "petclinic-app"
 
 service:
   type: LoadBalancer

@@ -25,16 +25,16 @@ podTemplate(label: 'helm-template' , cloud: 'k8s' , containers: [
 //                    sh 'git config --global user.email "you@example.com"'
 //                    sh 'git config --global user.name "Your Name"'
 //                    sh 'git remote set-url origin "ssh://git@github.com/yairbass/helm-app-demo.git" '
-//                    sh "./update_version.sh petclinic-chart-docker-app/Chart.yaml patch"
-//                    sh 'git add petclinic-chart-docker-app/Chart.yaml'
-//                    sh 'git commit -m "bump chart version" petclinic-chart-docker-app/Chart.yaml '
+//                    sh "./update_version.sh petclinic/Chart.yaml patch"
+//                    sh 'git add petclinic/Chart.yaml'
+//                    sh 'git commit -m "bump chart version" petclinic/Chart.yaml '
 //                    sh 'git push origin master'
 //                }
 //            }
 
             container('helm') {
                 sh "helm init --client-only"
-                sh "sed -i 's/latest/${dockerTag}/g' petclinic-chart-docker-app/values.yaml"
+                sh "sed -i 's/latest/${dockerTag}/g' petclinic/values.yaml"
                 sh "helm package petclinic-chart-docker-app"
             }
             container('jfrog-cli') {
