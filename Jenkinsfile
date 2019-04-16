@@ -35,6 +35,7 @@ podTemplate(label: 'helm-template' , cloud: 'k8s' , containers: [
             container('helm') {
                 sh "helm init --client-only"
                 sh "sed -i 's/latest/${dockerTag}/g' petclinic/values.yaml"
+                sh "sed -i 's/RTURL/${rtFullUrl}/g' petclinic/values.yaml"
                 sh "helm package petclinic"
             }
             container('jfrog-cli') {
