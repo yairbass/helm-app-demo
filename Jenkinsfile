@@ -11,8 +11,9 @@ podTemplate(label: 'helm-template' , cloud: 'k8s' , containers: [
 
             def pipelineUtils = load 'pipelineUtils.groovy'
 
-            def aqlString = 'items.find({"repo":"docker-prod-local","$and":[{"path":{"$match":"petclinic-app*"}},' +
-                            '{"path":{"$nmatch":"petclinic-app/latest"}}]}).include("path","created","name").sort({"$desc":["created"]}).limit(1)'
+            def aqlString = def aqlString =  'items.find ({"repo":"docker-local","type":"folder","$and":' +
+                    '[{"path":{"$match":"petclinic-app*"}},{"path":{"$nmatch":"petclinic-app/latest"}}]' +
+                    '}).include("path","created","name").sort({"$desc" : ["created"]}).limit(1)'
 
 
             def artifactInfo = pipelineUtils.executeAql(rtFullUrl, aqlString)
