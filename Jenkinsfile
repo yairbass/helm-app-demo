@@ -19,24 +19,25 @@ podTemplate(label: 'helm-template' , cloud: 'k8s' , containers: [
             def artifactInfo = pipelineUtils.executeAql(rtFullUrl, aqlString)
             def dockerTag = artifactInfo ? artifactInfo.name : "latest"
 
-//            stage ('Update Helm Chart version') {
-//                sh 'ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa'
-//                sh "ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts"
-//                sshagent(credentials: ['githubsshkey']) {
-//                    sh 'git config --global user.email "you@example.com"'
-//                    sh 'git config --global user.name "Your Name"'
-//                    sh 'git remote set-url origin "ssh://git@github.com/yairbass/helm-app-demo.git" '
-//                    sh "./update_version.sh petclinic/Chart.yaml patch"
-//                    sh 'git add petclinic/Chart.yaml'
-//                    sh 'git commit -m "bump chart version" petclinic/Chart.yaml '
-//                    sh 'git push origin master'
-//                }
-//            }
+            stage ('Update Helm Chart version') {
+                sh 'ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa'
+                sh "ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts"
+                sshagent(credentials: ['githubsshkey']) {
+                    sh 'git config --global user.email "you@example.com"'
+                    sh 'git config --global user.name "Your Name"'
+                    sh 'git remote set-url origin "ssh://git@github.com/yairbass/helm-app-demo.git" '
+                    sh "./update_version.sh petclinic/Chart.yaml patch"
+                    sh 'git add petclinic/Chart.yaml'
+                    sh 'git commit -m "bump chart version" petclinic/Chart.yaml '
+                    sh 'git push origin master'
+                }
+            }
 
             container('helm') {
+//                sh "drurl=$(sed 's/artifactory./docker.artifactory./g' <<< ${rtFullUrl})"
                 sh "helm init --client-only"
                 sh "sed -i 's/latest/${dockerTag}/g' petclinic/values.yaml"
-                sh "sed -i 's/RTURL/"${server}"/g' petclinic/values.yaml"
+//                sh "sed -i \"s,RTURL,${drurl},g\" petclinic/values.yaml"
                 sh "helm package petclinic"
             }
             container('jfrog-cli') {
