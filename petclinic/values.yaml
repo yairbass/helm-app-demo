@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: RTURL/petclinic-app
+  repository: petclinic-app
   tag: latest
   pullPolicy: IfNotPresent
 
@@ -53,4 +53,4 @@ mysql:
   imageTag: 5.7.14
   mysqlRootPassword: root
   mysqlDatabase: root
- # extraVolumeMounts: ./dbdata
+  extraVolumeMounts: ./dbdata
